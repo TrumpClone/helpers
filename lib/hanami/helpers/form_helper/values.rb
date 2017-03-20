@@ -18,7 +18,8 @@ module Hanami
         # @since 0.2.0
         # @api private
         def initialize(values, params)
-          @values = Utils::Hash.new(values || {}).symbolize!
+          # NOTICE: rewrite with #symbolize! if necessary
+          @values = Utils::Hash.new(values || {}).stringify!
           @params = params
         end
 
