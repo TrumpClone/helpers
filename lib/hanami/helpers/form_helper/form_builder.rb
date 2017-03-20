@@ -75,6 +75,8 @@ module Hanami
 
         # ENCTYPE_MULTIPART = 'multipart/form-data'.freeze
 
+        include Helpers::EscapeHelper
+
         self.html_node = ::Hanami::Helpers::FormHelper::HtmlNode
 
         # Instantiate a form builder
