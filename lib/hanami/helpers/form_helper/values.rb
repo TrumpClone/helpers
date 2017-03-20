@@ -27,10 +27,14 @@ module Hanami
         # @since 0.2.0
         # @api private
         def get(key)
-          @params.get(key) || _get_from_values(key)
+          _get_from_params(key) || _get_from_values(key)
         end
 
         private
+
+        def _get_from_params(key)
+          @params.get(key) if @params.respond_to?(:get)
+        end
 
         # @since 0.2.0
         # @api private
