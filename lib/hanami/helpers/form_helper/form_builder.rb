@@ -1,6 +1,7 @@
 require 'hanami/helpers/form_helper/html_node'
 require 'hanami/helpers/form_helper/values'
 require 'hanami/helpers/html_helper/html_builder'
+require 'hanami/helpers/escape_helper'
 require 'hanami/utils/string'
 
 module Hanami
@@ -81,6 +82,8 @@ module Hanami
         DEFAULT_CHECKED_VALUE = '1'.freeze
 
         # ENCTYPE_MULTIPART = 'multipart/form-data'.freeze
+
+        include Helpers::EscapeHelper
 
         self.html_node = ::Hanami::Helpers::FormHelper::HtmlNode
 
@@ -952,7 +955,10 @@ module Hanami
         # @api private
         # @since 0.2.0
         def _attributes(type, name, attributes)
-          { type: type, name: _input_name(name), id: _input_id(name), value: _value(name) }.merge(attributes)
+          attrs = { type: type, name: _input_name(name), id: _input_id(name), value: _value(name) }
+          attrs.merge!(attributes)
+          attrs[:value] = escape_html(attrs[:value])
+          attrs
         end
 
         # Input <tt>name</tt> HTML attribute
