@@ -1,6 +1,7 @@
 require 'hanami/helpers/form_helper/html_node'
 require 'hanami/helpers/form_helper/values'
 require 'hanami/helpers/html_helper/html_builder'
+require 'hanami/helpers/escape_helper'
 require 'hanami/utils/string'
 
 module Hanami
@@ -83,6 +84,8 @@ module Hanami
         # ENCTYPE_MULTIPART = 'multipart/form-data'.freeze
 
         self.html_node = ::Hanami::Helpers::FormHelper::HtmlNode
+
+        include Helpers::EscapeHelper
 
         # Instantiate a form builder
         #
@@ -686,7 +689,7 @@ module Hanami
         #   #  <input type="radio" name="book[category]" value="Non-Fiction" checked="checked">
         def radio_button(name, value, attributes = {})
           attributes = { type: :radio, name: _input_name(name), value: value }.merge(attributes)
-          attributes[:checked] = CHECKED if _value(name) == value
+          attributes[:checked] = CHECKED if _check_box_checked?(attributes[:value], _value(name))
           input(attributes)
         end
 
@@ -952,7 +955,10 @@ module Hanami
         # @api private
         # @since 0.2.0
         def _attributes(type, name, attributes)
-          { type: type, name: _input_name(name), id: _input_id(name), value: _value(name) }.merge(attributes)
+          attrs = { type: type, name: _input_name(name), id: _input_id(name), value: _value(name) }
+          attrs.merge!(attributes)
+          attrs[:value] = escape_html(attrs[:value])
+          attrs
         end
 
         # Input <tt>name</tt> HTML attribute
@@ -1029,6 +1035,12 @@ module Hanami
                                             (value == attributes[:value] || value.include?(attributes[:value]))
 
           attributes
+        end
+
+        def _check_box_checked?(value, input_value)
+          !input_value.nil? &&
+            (input_value.to_s == value.to_s || input_value.is_a?(TrueClass) ||
+            input_value.is_a?(Array) && input_value.include?(value))
         end
       end
     end
