@@ -27,10 +27,18 @@ module Hanami
         # @since 0.2.0
         # @api private
         def get(key)
-          @params.get(key) || _get_from_values(key)
+          _get_from_params(key) || _get_from_values(key)
         end
 
         private
+
+        def _get_from_params(key)
+          if @params.respond_to?(:dig)
+            @params.dig(*key.to_s.split(GET_SEPARATOR).map!(&:to_sym))
+          else
+            @params.get(key)
+          end
+        end
 
         # @since 0.2.0
         # @api private
