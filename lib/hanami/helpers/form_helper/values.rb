@@ -18,6 +18,7 @@ module Hanami
         # @since 0.2.0
         # @api private
         def initialize(values, params)
+          # NOTICE: 0.4 implementation has #stringify! invocation
           @values = Utils::Hash.new(values || {}).symbolize!
           @params = params
         end
@@ -27,7 +28,7 @@ module Hanami
         #
         # @since 0.2.0
         # @api private
-        def get(*keys)
+        def get(*keys) # NOTICE: 0.4 implementation has key {String} implementation
           _get_from_params(*keys) || _get_from_values(*keys)
         end
 
@@ -35,7 +36,7 @@ module Hanami
 
         # @since 0.5.0
         # @api private
-        def _get_from_params(*keys)
+        def _get_from_params(*keys) # NOTICE: 0.4 implementation has key {String} implementation
           @params.dig(*keys)
         end
 
