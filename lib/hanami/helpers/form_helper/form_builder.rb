@@ -1030,9 +1030,7 @@ module Hanami
             value: attributes.delete(:checked_value) || DEFAULT_CHECKED_VALUE
           }.merge(attributes)
 
-          value = _value(name)
-          attributes[:checked] = CHECKED if !value.nil? &&
-                                            (value == attributes[:value] || value.include?(attributes[:value]))
+          attributes[:checked] = CHECKED if _check_box_checked?(attributes[:value], _value(name))
 
           attributes
         end
